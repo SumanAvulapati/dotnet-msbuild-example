@@ -1,0 +1,117 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "dotnetcore-5.0-example",
+    "annotations": {
+      "openshift.io/display-name": "dotnetcore-5.0-example",
+      "description": "An example ,net 5 application",
+      "tags": "quickstart,.net core 5",
+      "openshift.io/long-description": "netcore-5.0-example",
+      "openshift.io/provider-display-name": "Suman",
+    }
+  },
+  "labels": {
+      "template": "dotnetcore-5.0-example",
+      "app": "dotnetcore-5.0-example"
+  },
+  "message": "The following service(s) have been created in your project: ${NAME}.\n\nFor more information about using this template, including OpenShift considerations, see https://github.com/sclorg/django-ex/blob/master/README.md.",
+  "objects": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "annotations": {
+          "description": "Keeps track of changes in the application image"
+        }
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "annotations": {
+          "description": "Defines how to build the application",
+          "template.alpha.openshift.io/wait-for-ready": "true"
+        }
+      },
+      "spec": {
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "${SOURCE_REPOSITORY_URL}",
+            "ref": "${SOURCE_REPOSITORY_REF}"
+          },
+          "contextDir": "${CONTEXT_DIR}"
+		  "sourceSecret": {
+			  "name:" "gitsecret"
+		  }
+        },
+        "strategy": {
+          "type": "Source",
+          "dockerStrategy": {
+			"pullSecret": {"name":"jfrog-dockercfg"},
+			"dockerfilepath": "Dockerfile",
+            "from": {
+              "kind": "ImageStreamTag",
+              "namespace": "${NAMESPACE}",
+              "name": "python:${PYTHON_VERSION}"
+            },
+            "env": [
+              {
+                  "name": "DOTNET_STARTUP_PROJECT",
+                  "value": "app"
+              },
+			  {
+				  "name": "DOTNET_RESTORE_SOURCES",
+				  "value": "http://35.200.153.144:8081/artifactory/api/nuget/nuget-virtual/"
+			  }
+            ]
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "${NAME}:latest"
+          }
+        },
+        "triggers": [
+          {
+            "type": "ImageChange"
+          },
+          {
+            "type": "ConfigChange"
+          }
+        ],
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "NAME",
+      "displayName": "Name",
+      "description": "The name assigned to all of the frontend objects defined in this template.",
+      "required": true,
+      "value": "dotnetcore-5-example"
+    },
+    {
+      "name": "SOURCE_REPOSITORY_URL",
+      "displayName": "Git Repository URL",
+      "required": true,
+      "description": "The URL of the repository with your application source code.",
+      "value": "https://github.com/sclorg/django-ex.git"
+    },
+    {
+      "name": "SOURCE_REPOSITORY_REF",
+      "displayName": "Git Reference",
+      "description": "Set this to a branch name, tag or other ref of your repository if you are not using the default branch."
+    },
+    {
+      "name": "CONTEXT_DIR",
+      "displayName": "Context Directory",
+      "description": "Set this to the relative path to your project if it is not in the root of your repository."
+    }
+  ]
+}
