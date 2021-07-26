@@ -56,8 +56,7 @@
 			"dockerfilepath": "Dockerfile",
             "from": {
               "kind": "ImageStreamTag",
-              "namespace": "${NAMESPACE}",
-              "name": "python:${PYTHON_VERSION}"
+              "name": "dotnet-core-sdk:2.2"
             },
             "env": [
               {
