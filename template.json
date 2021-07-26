@@ -15,7 +15,7 @@
       "template": "dotnetcore-5.0-example",
       "app": "dotnetcore-5.0-example"
   },
-  "message": "The following service(s) have been created in your project: ${NAME}.\n\nFor more information about using this template, including OpenShift considerations, see https://github.com/sclorg/django-ex/blob/master/README.md.",
+  "message": "The following service(s) have been created in your project: ${NAME}.\n\n",
   "objects": [
     {
       "kind": "ImageStream",
@@ -101,7 +101,7 @@
       "displayName": "Git Repository URL",
       "required": true,
       "description": "The URL of the repository with your application source code.",
-      "value": "https://github.com/sclorg/django-ex.git"
+      "value": "https://github.com/SumanAvulapati/dotnet-msbuild-example.git"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
